@@ -52,4 +52,4 @@ R10,10,Red,0,2,1
 RR,R,Red,Repeat,2,1
 R+2,2,Red,2,2,1
 CC,C,White,Change,8,1
-4,4,White,Change  +4,8,
+4,4,White,Change  +4,8,0

@@ -62,22 +62,27 @@ class UnoEngine:
                 'done': False
                 }
 
-    def p_state(self, player):
-        opponent = 1 if player == 0 else 0
+    def p_state(self, player): 
+        #Funktion um dem Spieler nur die fuer ihn verfuegbaren Informationen zu uebergeben ie Handkarten
+        #Input player = 0 oder 1
+        opponent = 1 if player == 0 else 0 
         return {'open_card': self.game_state['open_card'],
                 'hand_cards': self.game_state['p_cards'][player],
                 'n_opponent_cards': int(self.game_state['p_cards'][opponent].sum())
                 }
 
-    def legal_cards(self):
+    def legal_cards(self): 
+        #reads legality matrix out at row of current open card
         return self.leg_matrix[self.game_state['open_card']]
 
     def step(self, card):
+        #the propper game
+        #input is an int from -3 to n_cards
         player = self.game_state['turn']
         opponent = 1 if player == 0 else 0
 
         reward = 0
-        done = False
+        done = False #Gameover = False
 
         if self.game_state['p_cards'][opponent].sum() < 1:
             reward = -100
@@ -88,7 +93,8 @@ class UnoEngine:
             new_card = np.random.randint(self.n_cards)
             self.game_state['p_cards'][player][new_card] += 1
             self.game_state['turn'] = opponent
-        elif card == -2:
+        elif card == -2: 
+            #user Error
             print("This is a no nonsense affair, please only enter valid cards")        
         elif not self.legal_cards()[card]:
             print('illegal card!')
@@ -118,6 +124,8 @@ class UnoEngine:
                 }
 
     def text_step(self, card_name):
+        #executes step with text for user
+        #test function for humans
         if card_name == '':
             card = -1
         else:            
@@ -125,7 +133,7 @@ class UnoEngine:
                 card = np.argwhere(self.card_names == card_name)[0, 0]
             except:
                 card=-2        
-        dic = self.step(card)
+        dic = self.step(card) #executes actual step and returns more or less game state (for next player) + his reward
         hand_cards = []
         for c, n in enumerate(dic['p_state']['hand_cards']):
             if n > 0:
@@ -141,6 +149,7 @@ class UnoEngine:
         return done
 
     def text_reset(self):
+        #test function for humans
         dic = self.reset()
         hand_cards = []
         for c, n in enumerate(dic['p_state']['hand_cards']):
@@ -152,6 +161,8 @@ class UnoEngine:
         print('open card: ' + self.card_names[dic['p_state']['open_card']])
         print('Hand Cards: ' + hand_cards)
         print('Opponent has {} cards'.format(dic['p_state']['n_opponent_cards']))
+        
+        
 def easyAdv(game):
     player=1
     h=game.game_state['p_cards'][player]
